@@ -14,12 +14,17 @@ async function getTwilioConversation() {
     } catch (ex) {
         console.warn(`SID file does not exist, creating`);
     }
+
     convo = await client.conversations.conversations.create({friendlyName: 'CommCon demo'})
+
+    // Create a conversation
     console.log(`Created new convo ${convo.sid}`);
     await convo.participants().create({
         'messagingBinding.address': personalPhoneNumber,
         'messagingBinding.proxyAddress': twilioPhoneNumber,
     });
+
+    // Create a webhook
     await convo.webhooks().create({
         configuration: {
             url: webhookUrl,
@@ -41,6 +46,7 @@ async function main() {
 
         // If it's a membership invite, we should create a new room.
         if (eventData.type === "m.room.member" && eventData.content.membership === "invite") {
+            // @twilio_122244444:beefy
             const [phoneNumber] = eventData.state_key.substr('@twilio_'.length).split(':');
             const intent = bridge.getIntent(eventData.state_key);
 
@@ -76,8 +82,8 @@ async function main() {
     expressApp.get('/twilio', async (req, res) => {
         res.status(200);
         const {Author, Body} = req.query;
-        const [entry] = await bridge.getRoomStore().getEntriesByRemoteId(Author);
-        if (entry?.matrix) {
+        const entries = await bridge.getRoomStore().getEntriesByRemoteId(Author);
+        for (const entry of entries) {
             const roomId = entry.matrix.getId();
             const intent = bridge.getIntentFromLocalpart('twilio_' + Author.replace('+', ''));
             await intent.sendText(roomId, Body);
@@ -88,6 +94,7 @@ async function main() {
     expressApp.listen(1338);
     // Listen for matrix events from Synapse
     await bridge.run(1337);
+    console.log("Started up");
 }
 
 main().catch(err => console.log("Failed:", err));

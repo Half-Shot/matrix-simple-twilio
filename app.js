@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { accountSid, authToken, personalPhoneNumber, twilioPhoneNumber } = require('./config');
+const { accountSid, authToken, personalPhoneNumber, twilioPhoneNumber, homeserverUrl, domain } = require('./config');
 const { Bridge, MatrixRoom, RemoteRoom } = require('matrix-appservice-bridge');
 const client = require('twilio')(accountSid, authToken);
 const express = require('express');
@@ -70,8 +70,8 @@ async function main() {
     // Setup the Matrix bridge
     const bridge = new Bridge({
         registration: './registration.yaml',
-        homeserverUrl: 'http://localhost:8008',
-        domain: 'beefy',
+        homeserverUrl,
+        domain,
         controller: {
             onEvent: (request, context) => onMatrixEvent(request, context)
         }

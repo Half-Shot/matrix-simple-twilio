@@ -3,5 +3,7 @@ module.exports = {
     authToken: "your-auth-token",
     personalPhoneNumber: "your-target-number",
     twilioPhoneNumber: "your-bot-number",
-    webhookUrl: 'url-to-hit-webhooks-on'
+    webhookUrl: 'url-to-hit-webhooks-on',
+    homeserverUrl: 'http://localhost:8008',
+    domain: 'your-domain'
 }

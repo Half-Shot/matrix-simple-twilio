@@ -1,0 +1,10 @@
+id: twiliobridge
+hs_token: foo
+as_token: bar
+namespaces:
+  users:
+    - exclusive: true
+      regex: '@twilio_.*:beefy'
+url: 'http://localhost:1337'
+sender_localpart: twilio
+rate_limited: false
